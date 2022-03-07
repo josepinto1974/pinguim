@@ -1,0 +1,2 @@
+copy C:\jpdocuments\automation_cross\infra\terraform\source\modulos\fargate\temp\service.json C:\jpdocuments\automation_cross\infra\terraform\source\modulos\fargate\
+cd C:\jpdocuments\automation_cross\infra\terraform\source\modulos\fargate\

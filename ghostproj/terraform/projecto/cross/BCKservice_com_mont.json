@@ -1,0 +1,24 @@
+[
+      {
+	      "cpu": 256,
+        "memory": 512,
+        "name": "jenkins-agent",
+        "image": "920768381054.dkr.ecr.eu-west-2.amazonaws.com/opendj-ldap:1.0.2",
+        "essential": true,
+        "logConfiguration": {
+          "logDriver": "awslogs",
+          "options": {
+            "awslogs-group": "/ecs/jenkins-agent",
+            "awslogs-region": "us-west-1",
+            "awslogs-stream-prefix": "ecs"
+          }
+        },
+        "mountPoints": [
+          {
+            "sourceVolume": "efs_temp",
+            "containerPath": "/efs",
+            "readOnly": false
+          }
+        ]
+      }
+    ]

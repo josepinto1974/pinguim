@@ -1,0 +1,13 @@
+[
+  {
+      "volumesFrom": [],
+      "memory": 512,
+      
+      "essential": true,
+      "mountPoints": [],
+      "name": "opendj-ldap",
+      "environment": [],
+      "image": "920768381054.dkr.ecr.eu-west-2.amazonaws.com/opendj-ldap",
+      "cpu": 256
+  }
+]

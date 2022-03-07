@@ -1,0 +1,24 @@
+[
+      {
+	    "cpu": "173.25.0.0/16",
+        "memory": "173.25.0.0/16",
+        "name": "jenkins-agent",
+        "image": "1:1",
+        "essential": true,
+        "logConfiguration": {
+          "logDriver": "awslogs",
+          "options": {
+            "awslogs-group": "/ecs/jenkins-agent",
+            "awslogs-region": "us-west-1",
+            "awslogs-stream-prefix": "ecs"
+          }
+        },
+        "mountPoints": [
+          {
+            "sourceVolume": "efs_temp",
+            "containerPath": "/efs",
+            "readOnly": false
+          }
+        ]
+      }
+    ]

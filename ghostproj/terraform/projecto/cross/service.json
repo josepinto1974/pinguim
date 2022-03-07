@@ -1,0 +1,17 @@
+[
+      {
+	    "cpu": "2",
+        "memory": "512",
+        "name": "jenkins-agent",
+        "image": "920768381054.dkr.ecr.eu-west-2.amazonaws.com/sigom-net-core:3.0.4",
+        "essential": true,
+        
+        "mountPoints": [
+          {
+            "sourceVolume": "efs_temp",
+            "containerPath": "/efs",
+            "readOnly": false
+          }
+        ]
+      }
+    ]
