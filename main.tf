@@ -17,7 +17,6 @@ locals {
 }
 
 
-
 terraform {
    backend "s3" {
     bucket = "terraformtfstatejp"
