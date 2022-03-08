@@ -5,7 +5,7 @@
 }  */
 
 
-  output "aws_cloudfront_distributions3_distribution_domain_name" {
+/*   output "aws_cloudfront_distributions3_distribution_domain_name" {
   value       = "${aws_cloudfront_distribution.s3_distribution.domain_name}"
   description = "aws_security_group__ecs_tasks_id"
   
@@ -18,4 +18,4 @@
   value       = "${aws_cloudfront_distribution.s3_distribution.hosted_zone_id}"
   description = "aws_security_group__ecs_tasks_id"
   
-}  
+}   */

@@ -3,7 +3,7 @@
 
 resource "aws_route53_zone" "main" {
   name = var.domain_name
-  tags = var.common_tags
+  #tags = var.common_tags
 }
 
 resource "aws_route53_record" "root-a" {
@@ -12,8 +12,8 @@ resource "aws_route53_record" "root-a" {
   type = "A"
 
   alias {
-    name = aws_cloudfront_distribution.root_s3_distribution.domain_name
-    zone_id = aws_cloudfront_distribution.root_s3_distribution.hosted_zone_id
+    name = var.aws_cloudfront_distributions3_distribution_domain_name
+    zone_id = var.aws_cloudfront_distributions3_distribution_hosted_zone_id
     evaluate_target_health = false
   }
 }
@@ -24,8 +24,8 @@ resource "aws_route53_record" "www-a" {
   type = "A"
 
   alias {
-    name = aws_cloudfront_distribution.www_s3_distribution.domain_name
-    zone_id = aws_cloudfront_distribution.www_s3_distribution.hosted_zone_id
+    name = var.aws_cloudfront_distributions3_distribution_domain_name
+    zone_id = var.aws_cloudfront_distributions3_distribution_hosted_zone_id
     evaluate_target_health = false
   }
 } 
@@ -35,6 +35,7 @@ resource "aws_route53_record" "www-a" {
 
 
 
+/* 
 
 
 
@@ -47,15 +48,6 @@ resource "aws_route53_record" "www-a" {
 
 
 
-
-
-
-
-
-data "aws_route53_zone" "zone" {
-  name = "${var.domain_name}."
-  private_zone = false
-}
 
 resource "aws_acm_certificate" "cert" {
   domain_name               = "${var.domain_name}"
@@ -65,7 +57,7 @@ resource "aws_acm_certificate" "cert" {
 }
 
 
-esource "aws_route53_record" "cert" {
+resource "aws_route53_record" "cert" {
   zone_id = "${data.aws_route53_zone.zone.id}"
   name    = "${lookup(aws_acm_certificate.cert.domain_validation_options[count.index], "resource_record_name")}"
   type    = "${lookup(aws_acm_certificate.cert.domain_validation_options[count.index], "resource_record_type")}"
@@ -73,24 +65,8 @@ esource "aws_route53_record" "cert" {
   ttl     = 60
 }
 
-resource "aws_acm_certificate_validation" "cert" {
-    provider = "aws.east"
-    certificate_arn = "${aws_acm_certificate.cert.arn}"
-    validation_record_fqdns = ["${aws_route53_record.cert.*.fqdn}" ]
-}
 
 
-
-
-
-
-
-# Note: Creating this route53 zone is not enough. The domain's name servers need to point to the NS
-# servers of the route53 zone. Otherwise the DNS lookup will fail.
-# To verify that the dns lookup succeeds: `dig site @nameserver`
-resource "aws_route53_zone" "main" {
-  name = "${var.domain}"
-}
 
 resource "aws_route53_record" "root_domain" {
   zone_id = "${aws_route53_zone.main.zone_id}"
@@ -104,7 +80,7 @@ resource "aws_route53_record" "root_domain" {
   }
 }
 
-/* 
+
 # https://github.com/cloudposse/terraform-aws-cloudfront-s3-cdn/issues/109
 
 data "aws_route53_zone" "main" {
@@ -118,7 +94,7 @@ data "aws_acm_certificate" "certificate" {
   most_recent = true
 }
 
-module "cloudfront-s3-cdn" {
+/* module "cloudfront-s3-cdn" {
   source  = "cloudposse/cloudfront-s3-cdn/aws"
   version = "0.35.0"
 
@@ -143,24 +119,20 @@ module "cloudfront-s3-cdn" {
 
   depends_on = [data.aws_acm_certificate.certificate]
 }
+ 
+
+#
+
+#https://stackoverflow.com/questions/66411564/cloudfront-redirect-using-route-53
 
 
-aws_route53_record
-
-https://stackoverflow.com/questions/66411564/cloudfront-redirect-using-route-53
+#https://www.deployawebsite.com/static-sites/s3-terraform/dns/
 
 
-https://www.deployawebsite.com/static-sites/s3-terraform/dns/
-
-
-https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/route53_record
+#https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/route53_record
 
 resource "aws_cloudfront_distribution" "www_distribution" {
-  /**
-   * The distribution's origin needs a "custom" setup in order to redirect 
-   * traffic from <domain>.com to www.<domain>.com. The values bellow are the 
-   * defaults.
-   */
+
   origin {
     custom_origin_config {
       http_port              = "80"
@@ -169,10 +141,7 @@ resource "aws_cloudfront_distribution" "www_distribution" {
       origin_ssl_protocols   = ["TLSv1", "TLSv1.1", "TLSv1.2"]
     }
 
-    /** 
-     * This connects the S3 bucket created earlier to the Cloudfront 
-     * distribution. 
-     */
+   
     domain_name = aws_s3_bucket.www.website_endpoint
     origin_id   = var.www_domain_name
   }
@@ -198,10 +167,7 @@ resource "aws_cloudfront_distribution" "www_distribution" {
     }
   }
 
-  /**
-   * This sets the aliases of the Cloudfront distribution. Here, it is being
-   * set to be accessible by <var.www_domain_name>.
-   */
+ 
   aliases = [ var.www_domain_name ]
 
   restrictions {
@@ -210,9 +176,7 @@ resource "aws_cloudfront_distribution" "www_distribution" {
     }
   }
 
-  /**
-   * The AWS ACM Certificate is then applied to the distribution.
-   */
+ 
   viewer_certificate {
     acm_certificate_arn = aws_acm_certificate.certificate.arn
     ssl_support_method  = "sni-only"
@@ -225,18 +189,6 @@ resource "aws_route53_zone" "zone" {
   name = var.root_domain_name
 }
 
-
-resource "aws_route53_record" "www" {
-  zone_id = aws_route53_zone.zone.zone_id
-  name    = var.www_domain_name
-  type    = "A"
-
-  alias {
-    name                   = aws_cloudfront_distribution.www_distribution.domain_name
-    zone_id                = aws_cloudfront_distribution.www_distribution.hosted_zone_id
-    evaluate_target_health = false
-  }
-}
 
 
 
@@ -271,15 +223,7 @@ resource "aws_acm_certificate_validation" "cert_validation_virginia" {
 
 
 
-https://blog.jarmosz.uk/posts/s3-bucket-redirect/
-# ACM cert and Route 53 validation
-#
 
-resource "aws_acm_certificate" "cert" {
-  domain_name       = "${var.root_domain_name}"
-  validation_method = "DNS"
-  subject_alternative_names = ["www.${var.root_domain_name}"]
-}
 
 data "aws_route53_zone" "zone" {
   name         = "${var.root_domain_name}."
@@ -305,17 +249,17 @@ resource "aws_route53_record" "cert_validation_www" {
 resource "aws_acm_certificate_validation" "cert" {
   certificate_arn         = "${aws_acm_certificate.cert.arn}"
   validation_record_fqdns = ["${aws_route53_record.cert_validation.fqdn}", "${aws_route53_record.cert_validation_www.fqdn}"]
-} */
+} 
 
 
 
-https://github.com/conortm/terraform-aws-s3-static-website/blob/master/main.tf
+#https://github.com/conortm/terraform-aws-s3-static-website/blob/master/main.tf
 
-https://github.com/conortm/terraform-aws-s3-static-website/blob/master/main.tf
+#https://github.com/conortm/terraform-aws-s3-static-website/blob/master/main.tf
 
 
 
-https://stackoverflow.com/questions/56565194/terraform-route53-lb-and-cdn-interdependency
+#https://stackoverflow.com/questions/56565194/terraform-route53-lb-and-cdn-interdependency
 resource "aws_route53_record" "www" {
   count = "${var.domain-name != "" ? 1 : 0}"
 
@@ -335,9 +279,9 @@ resource "aws_route53_record" "www" {
 }
 
 
-https://www.alexhyett.com/terraform-s3-static-website-hosting
-vital
+#https://www.alexhyett.com/terraform-s3-static-website-hosting
+#vital
 
-https://www.alexhyett.com/terraform-s3-static-website-hosting
+#https://www.alexhyett.com/terraform-s3-static-website-hosting
 
-e https://maxrozen.com/start-your-own-app-with-react-part-2
+# https://maxrozen.com/start-your-own-app-with-react-part-2 */

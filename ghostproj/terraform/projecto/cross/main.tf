@@ -51,7 +51,14 @@ locals {
   
 }
 
-
+/*    module "route53" {
+  source = "../../source/modulos/cdn"
+  aws_lb_main_dns_name = "${module.fargate.aws_lb_main_dns_name}"
+  aws_lb_main_id = "${module.fargate.aws_lb_main_id}"
+  #albnome = 0
+  #subnets_id = "${module.redes.aws_subnet_publica_aza_id}"
+  #alb_security_groups =
+}   */
 
 
 variable "priv_subnet" {
@@ -300,46 +307,51 @@ access_point = "/shared"
 
 ###BOM
  
-/*     module "acm" {
+    module "acm" {
   source = "../../source/modulos/acm"
  domain_name = "www.pinguim.com"
   
 } 
- */
+ 
 
 /*    module "route53" {
-  source = "../../source/modulos/cdn"
-  aws_lb_main_dns_name = "${module.fargate.aws_lb_main_dns_name}"
-  aws_lb_main_id = "${module.fargate.aws_lb_main_id}"
+  source = "../../source/modulos/route53"
+  domain_name = "ghost"
+  aws_cloudfront_distributions3_distribution_domain_name = "${module.cdn.aws_cloudfront_distributions3_distribution_domain_name}"
+  aws_cloudfront_distributions3_distribution_hosted_zone_id = "${module.cdn.aws_cloudfront_distributions3_distribution_hosted_zone_id}"
+  #aws_lb_main_dns_name = "${module.fargate.aws_lb_main_dns_name}"
+  #aws_lb_main_id = "${module.fargate.aws_lb_main_id}"
   #albnome = 0
   #subnets_id = "${module.redes.aws_subnet_publica_aza_id}"
   #alb_security_groups =
-}   */
+}    */
+
  
 
 
 
 
 
-/*      module "CDN" {
+/*   module "cdn" {
   source = "../../source/modulos/cdn"
-  aws_acm_certificate_validation_cert_certificate_arn= "${module.acm.aws_acm_certificate_validation_cert_certificate_arn_ping}"
+  #aws_acm_certificate_validation_cert_certificate_arn= "${module.acm.aws_acm_certificate_validation_cert_certificate_arn_ping}"
   aws_wafv2_web_acl_cdbpinguim_arn = "${module.waf.aws_wafv2_web_acl_cdbpinguim_arn}"
-
-  
+ #aws_cloudfront_distributions3_distribution_domain_name = "${module.cdn.aws_cloudfront_distributions3_distribution_domain_name}"
+  #aws_cloudfront_distributions3_distribution_hosted_zone_id = "${module.cdn.aws_cloudfront_distributions3_distribution_hosted_zone_id}"
+  domain_name = "ghost"
  aws_lb_main_dns_name = "${module.fargate.aws_lb_main_dns_name}"
   aws_lb_main_id = "${module.fargate.aws_lb_main_id}"
 
-}  
+}  */ 
 
-
+   
     module "waf" {
   source = "../../source/modulos/awf"
   # aws_alb_id = "${module.fargate_net_core.aws_alb_id}"
    
   # aws_alb_dns=  "${module.fargate_net_core.aws_alb_dns}"
 
-}   */
+}  
 
 ##fim renover fase1 #spagados
 
