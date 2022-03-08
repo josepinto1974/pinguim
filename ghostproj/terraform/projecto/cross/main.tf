@@ -1,7 +1,4 @@
 
-
-
-
 terraform {
   required_providers {
     aws = {
@@ -266,10 +263,38 @@ access_point = "/shared"
 #################FARGATE
  ##bom
  
+locals {
+  database__connection__user = "user1"
+}
+
+  module "basedados" {
+  source = "../../source/modulos/rds"
+  SG_RDS = "${module.SG.aws_security_group__rds}"
+  aws_db_subnet_group_private="${module.network.aws_db_subnet_group_private}"   
+    vpc_ldap_id_p = "${module.network.aws_vpc_vpc_cross_id}"
+   rds_var = var.rds_var
+   pinguim_proxy_role =  "${module.iam.aws_iam_role_secrets_policy}"
+   maxstrore = "30"
+   database__connection__user = local.database__connection__user
+   initialstoradge = "20"
+   aws_iam_role_enhanced_pinguim_monitoring = "${module.iam.aws_iam_role_enhanced_pinguim_monitoring}"
+   aws_secretsmanager_secret_version_rdspassword = "${module.secrets.aws_secretsmanager_secret_version_rdspassword}"
+   subnets_privada_id =  "${module.network.subnets_privada_id}" 
+
+}  
 
  module "fargate" {
   source = "../../source/modulos/fargate"
   efs_name = "/shared"
+
+#####################ENV
+database__client = "mysql"
+#database__connection__host = 
+database__connection__user = local.database__connection__user
+database__connection__password = "${module.secrets.aws_secretsmanager_secret_version_rdspassword}"
+database__connection__database =  "${module.basedados.rdsproxy_endpoint}"
+  
+
 
   aws_iam_role_ecs-autoscale-role =  "${module.iam.aws_iam_role_ecs-autoscale-role}"
   file_system_id  = "${module.criar_efs.aws_efs_file_system_efs_system_id}"
@@ -295,6 +320,8 @@ access_point = "/shared"
 
   autoscaling_scale_in_cooldown = "22"
   autoscaling_scale_out_cooldown = "22"
+
+  depends_on = [module.basedados]
 }   
 
 
@@ -306,13 +333,13 @@ access_point = "/shared"
 
 
 ###BOM
- 
+/*  
     module "acm" {
   source = "../../source/modulos/acm"
  domain_name = "www.pinguim.com"
   
 } 
- 
+  */
 
 /*    module "route53" {
   source = "../../source/modulos/route53"
@@ -347,41 +374,10 @@ access_point = "/shared"
    
     module "waf" {
   source = "../../source/modulos/awf"
-  # aws_alb_id = "${module.fargate_net_core.aws_alb_id}"
-   
-  # aws_alb_dns=  "${module.fargate_net_core.aws_alb_dns}"
-
 }  
 
-##fim renover fase1 #spagados
-
-
-
-
-####################################
-#####RDS
-
-####BOM inicio
-  module "basedados" {
-  source = "../../source/modulos/rds"
-  SG_RDS = "${module.SG.aws_security_group__rds}"
-  aws_db_subnet_group_private="${module.network.aws_db_subnet_group_private}"   
-    vpc_ldap_id_p = "${module.network.aws_vpc_vpc_cross_id}"
-   rds_var = var.rds_var
-   pinguim_proxy_role =  "${module.iam.aws_iam_role_secrets_policy}"
-   maxstrore = "30"
-   initialstoradge = "20"
-   aws_iam_role_enhanced_pinguim_monitoring = "${module.iam.aws_iam_role_enhanced_pinguim_monitoring}"
-   aws_secretsmanager_secret_version_rdspassword = "${module.secrets.aws_secretsmanager_secret_version_rdspassword}"
-   subnets_privada_id =  "${module.network.subnets_privada_id}" 
-}  
- 
-
-##########################
-###lambda
 
  module "lambda" {
 source = "../../source/modulos/lambda"
-aws_iam_lambda_role  = "${module.iam. aws_iam_lambda_role}"
-
+aws_iam_lambda_role ="${module.iam.aws_iam_lambda_role}"
  }

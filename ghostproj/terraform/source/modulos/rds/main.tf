@@ -100,7 +100,7 @@ resource "aws_db_instance" "nova" {
   engine_version            = "5.7"
   instance_class            = "db.t2.micro"
   db_name                      = "pinguim"
-  username                  = "testeapagar"
+  username                  = var.database__connection__user
   password                  = var.aws_secretsmanager_secret_version_rdspassword
   db_subnet_group_name      = "${var.aws_db_subnet_group_private}"
   vpc_security_group_ids    =  ["${var.SG_RDS}"]

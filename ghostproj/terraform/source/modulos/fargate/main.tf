@@ -251,19 +251,19 @@ type        = list(map(string))
 description = "environment varibale needed by the application"
 default = [
 {
-  "name" = "LDAP_DATA_SOURCE",
+  "name" = "database__client",
   "value" = "/config/ldap_users.csv"
 },{
-  "name" = "LDAP_ENDPOINT",
+  "name" = "database__connection__host",
   "value" = "0.0.0.0"
 },{
-  "name" = "LDAP_IGNORE_PASSWORD",
+  "name" = "database__connection__user",
   "value" = "1"
 },{
-  "name" = "LDAP_PORT",
+  "name" = "database__connection__password",
   "value" = "3890"
 },{
-  "name" = "CONFIG_URL",
+  "name" = "database__connection__database",
   "value" = "/config/LOCAL_CONFIG.json"
 }]
 

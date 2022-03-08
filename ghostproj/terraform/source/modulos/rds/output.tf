@@ -4,3 +4,8 @@
   
 }  */
 
+  output "rdsproxy_endpoint" {
+  value       = "${aws_db_proxy.pinguim.endpoint}"
+  description = "rdsproxy_endpoint"
+  
+}   

@@ -20,6 +20,37 @@ variable "container_port" {
   default = "80"
 }
 
+variable "database__client" {
+  type = string
+  default = "ec2nome"
+}
+
+
+variable "database__connection__host" {
+  type = string
+  default = "ec2nome"
+}
+
+
+variable "database__connection__user" {
+  type = string
+  default = "ec2nome"
+}
+
+
+variable "database__connection__password" {
+  type = string
+  default = "ec2nome"
+}
+
+
+variable "database__connection__database" {
+  type = string
+  default = "ec2nome"
+}
+
+
+
 variable "name" {
   type = string
   default = "ec2nome"

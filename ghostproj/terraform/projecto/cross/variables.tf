@@ -332,6 +332,39 @@ variable "aws_cloudfront_distributions3_distribution_hosted_zone_id" {
 }
 
 
+
+variable "database__client" {
+  type = string
+  default = "ec2nome"
+}
+
+
+variable "database__connection__host" {
+  type = string
+  default = "ec2nome"
+}
+
+
+variable "database__connection__user" {
+  type = string
+  default = "ec2nome"
+}
+
+
+variable "database__connection__password" {
+  type = string
+  default = "ec2nome"
+}
+
+
+variable "database__connection__database" {
+  type = string
+  default = "ec2nome"
+}
+
+
+
+
 variable "aws_acm_certificate_validation_cert_certificate_arn" {
   type = string
   default = "ec2nome"

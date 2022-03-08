@@ -52,6 +52,36 @@ variable "aws_db_subnet_group_private" {
   
 } */
 
+
+variable "database__client" {
+  type = string
+  default = "ec2nome"
+}
+
+
+variable "database__connection__host" {
+  type = string
+  default = "ec2nome"
+}
+
+
+variable "database__connection__user" {
+  type = string
+  default = "ec2nome"
+}
+
+
+variable "database__connection__password" {
+  type = string
+  default = "ec2nome"
+}
+
+
+variable "database__connection__database" {
+  type = string
+  default = "ec2nome"
+}
+
  variable "subnets_privada_id" {
   type = list
   default = ["000"]
