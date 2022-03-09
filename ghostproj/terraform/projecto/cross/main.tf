@@ -37,10 +37,10 @@ locals {
   
 }
 
-locals {
+/* locals {
   app_image = "ghost"
   
-}
+} */
 
 
 locals {
@@ -142,7 +142,7 @@ locals {
 module "iam" {
       source = "../../source/modulos/pinguimiam"
       environment = local.environment
-      app_image = local.app_image
+      app_image = var.app_image
       
 } 
 
@@ -267,7 +267,7 @@ database__connection__database =  "${module.basedados.rdsproxy_endpoint}"
   vpc_id = "${module.network.aws_vpc_vpc_cross_id}"
   fargate_cpu = "2"
    fargate_memory = "512"
-  app_image = local.app_image
+  app_image = var.app_image
   autoscaling_scale_in_cooldown = "22"
   autoscaling_scale_out_cooldown = "22"
   depends_on = [module.basedados]
@@ -297,6 +297,8 @@ database__connection__database =  "${module.basedados.rdsproxy_endpoint}"
   depends_on = [module.waf]
 
 }  
+
+   
 
 
  module "lambda" {

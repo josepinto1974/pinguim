@@ -275,7 +275,7 @@ variable "nome_SG_chat" {
 
  variable "app_image" {
   type = string
-  default = "ec2nome"
+  default = "ghost"
 }
 
  

@@ -1,4 +1,4 @@
-
+###​comment if you have already a domain in AWS
 resource "aws_route53_zone" "pinguim_hosted_zone" {
   name = var.domain_name
 }
@@ -7,6 +7,9 @@ resource "aws_route53_zone" "pinguim_hosted_zone" {
 #https://www.oss-group.co.nz/blog/automated-certificates-aws
 
 # This data source looks up the public DNS zone
+
+###un​comment if you have already a domain in AWS
+
 /* data "aws_route53_zone" "public" {
   name         = var.domain_name
   private_zone = false
