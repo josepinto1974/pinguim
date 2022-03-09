@@ -10,7 +10,7 @@
 
 
 
-/* resource "aws_autoscaling_group" "asg" {
+ resource "aws_autoscaling_group" "asg" {
   count = length(var.subnets_privada_id)
   vpc_zone_identifier       = ["var.subnets_privada_id[count.index].id"]
   desired_capacity          = 1
@@ -45,7 +45,7 @@ resource "aws_launch_configuration" "pinguim" {
     lifecycle {
     create_before_destroy = true
   }
-} */
+} 
 
 
 
@@ -80,7 +80,7 @@ tag {
  */
 
 
-resource "aws_instance" "ec2instance" {
+/* resource "aws_instance" "ec2instance" {
     instance_type = var.instance_type
     ami =  var.ami_id 
     #iam_instance_profile = var.iamrole
@@ -94,5 +94,5 @@ resource "aws_instance" "ec2instance" {
       Name = var.ec2_name
     }
   }
-
+ */
 
