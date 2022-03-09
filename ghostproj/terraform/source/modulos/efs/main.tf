@@ -102,10 +102,10 @@ echo $EFS_ID_ems:/ /ems efs defaults,_netdev 0 0 >> /etc/fstab
 
 
 
-/* 
- module "instancias_efs" {
+
+ /* module "instancias_efs" {
   source = "../ec2"
-  AZregiaoDC     = local.AZregiaoDC
+  #AZregiaoDC     = local.AZregiaoDC
   #amilinux_master = "ami-0ab1a741b29a4ed88"
    subnets_privada_id = var.subnets_privada_id
   ami_id = "ami-0a614bb6ddb883be6"
@@ -134,7 +134,7 @@ aws_subnet_private1_aza_id="${module.redes.aws_subnet_private1_aza_id}"
                  touch /configldap/config/LOCAL_CONFIG.json
                  echo "antes do mont montfeito"
                  ls -l /configldap/config/
-              mount -t efs -o iam,tls "${module.criar_efs.aws_efs_file_system_efs_system_id}":/ /configldap
+              mount -t efs -o iam,tls "${aws_efs_file_system.efs_system.id}":/ /configldap
               ls -l /configldap/
               ls -l /configldap/config/
                 chmod 777 /ems
@@ -155,7 +155,7 @@ aws_subnet_private1_aza_id="${module.redes.aws_subnet_private1_aza_id}"
                  ls /shared
                 sleep 90s
                 chmod 777 /shared
-              mount -t efs -o iam,tls "${module.criar_efs_ems.aws_efs_file_system_efs_system_id}":/ /shared  
+              mount -t efs -o iam,tls "${aws_efs_file_system.efs_system.id}":/ /shared  
                chmod 777 /shared
                   
                  
@@ -175,8 +175,8 @@ echo $EFS_ID_ems:/ /ems efs defaults,_netdev 0 0 >> /etc/fstab
             
               EOF
 }
-
  */
+ 
 
 
  resource "aws_efs_access_point" "pinguim" {

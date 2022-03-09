@@ -184,7 +184,11 @@ module "network" {
 
 
 
+###############
 
+
+
+###############
 
 module "criar_efs" {
   source = "../../source/modulos/efs"
@@ -199,8 +203,8 @@ access_point = "/shared"
 
 }
 
-/* #####bastian
-##Devo fazer aqui o criacao do bastiao de modo a poder obter o ip privado e passar aos outros modulos
+ #####bastian
+/* ##Devo fazer aqui o criacao do bastiao de modo a poder obter o ip privado e passar aos outros modulos
     module "instanciasbastian" {
     source = "../../source/modulos/ec2"
     
@@ -212,9 +216,9 @@ access_point = "/shared"
 
 
     }
- */
 
-###fim bastian
+
+###fim bastian */
 
 
 
