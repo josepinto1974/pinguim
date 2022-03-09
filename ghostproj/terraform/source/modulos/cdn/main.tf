@@ -1,16 +1,21 @@
 
-#https://www.oss-group.co.nz/blog/automated-certificates-aws
-
-# This data source looks up the public DNS zone
-data "aws_route53_zone" "public" {
-  name         = var.domain_name
-  private_zone = false
-  #provider     = aws.account_route53
+resource "aws_route53_zone" "pinguim_hosted_zone" {
+  name = var.domain_name
 }
 
 
+#https://www.oss-group.co.nz/blog/automated-certificates-aws
+
+# This data source looks up the public DNS zone
+/* data "aws_route53_zone" "public" {
+  name         = var.domain_name
+  private_zone = false
+  #provider     = aws.account_route53
+} */
+
+
 resource "aws_acm_certificate" "myapp" {
-  domain_name       = aws_route53_record.myapp.fqdn
+  domain_name       = aws_route53_record.cert_validation.fqdn
   validation_method = "DNS"
   lifecycle {
     create_before_destroy = true
@@ -18,15 +23,6 @@ resource "aws_acm_certificate" "myapp" {
 }
 
 
-/* resource "aws_route53_record" "cert_validation" {
-  allow_overwrite = true
-  name            = tolist(aws_acm_certificate.myapp.domain_validation_options)[0].resource_record_name
-  records         = [ tolist(aws_acm_certificate.myapp.domain_validation_options)[0].resource_record_value ]
-  type            = tolist(aws_acm_certificate.myapp.domain_validation_options)[0].resource_record_type
-  zone_id  = data.aws_route53_zone.public.id
-  ttl      = 60
-  #provider = aws.account_route53
-} */
 
 
 # This tells terraform to cause the route53 validation to happen
@@ -35,19 +31,7 @@ resource "aws_acm_certificate_validation" "cert" {
   validation_record_fqdns = [ aws_route53_record.cert_validation.fqdn ]
 }
 
-# Standard route53 DNS record for "myapp" pointing to an ALB
-/* resource "aws_route53_record" "myapp" {
-  zone_id = data.aws_route53_zone.public.zone_id
-  name    = "${var.demo_dns_name}.${data.aws_route53_zone.public.name}"
-  type    = "A"
-  alias {
-    name = aws_cloudfront_distribution.s3_distribution.domain_name
-    zone_id = var.aws_cloudfront_distributions3_distribution_hosted_zone_id
-    evaluate_target_health = false
-  } 
-  #provider = aws.account_route53
-}
-*/
+
 
 
 
@@ -76,9 +60,9 @@ resource "aws_acm_certificate_validation" "cert" {
 } */
 
 # Standard route53 DNS record for "myapp" pointing to an ALB
-resource "aws_route53_record" "myapp" {
-  zone_id = data.aws_route53_zone.public.zone_id
-  name    = "${var.demo_dns_name}.${data.aws_route53_zone.public.name}"
+resource "aws_route53_record" "cert_validation" {
+  zone_id = aws_route53_zone.pinguim_hosted_zone.zone_id
+  name    = "${var.domain_name}.${aws_route53_zone.pinguim_hosted_zone.name}"
   type    = "A"
   alias {
     name = aws_cloudfront_distribution.s3_distribution.domain_name
@@ -136,6 +120,7 @@ resource "aws_cloudfront_distribution" "s3_distribution" {
     max_ttl                = 86400
   }
 
+
   # Cache behavior with precedence 0
   ordered_cache_behavior {
     path_pattern     = "/content/immutable/*"
@@ -159,8 +144,12 @@ resource "aws_cloudfront_distribution" "s3_distribution" {
     viewer_protocol_policy = "redirect-to-https"
   }
 
+
+
+
   # Cache behavior with precedence 1
   ordered_cache_behavior {
+    #count = length(var.aws_lb_main_id)
     path_pattern     = "/content/*"
     allowed_methods  = ["GET", "HEAD", "OPTIONS"]
     cached_methods   = ["GET", "HEAD"]
@@ -197,7 +186,7 @@ resource "aws_cloudfront_distribution" "s3_distribution" {
     viewer_certificate {
     ssl_support_method       = "sni-only"
     minimum_protocol_version = "TLSv1"
-    acm_certificate_arn   = "${aws_acm_certificate_validation.cert.certificate_arn}"
+    #acm_certificate_arn   = "${aws_acm_certificate_validation.cert.certificate_arn}"
 
   }
 }

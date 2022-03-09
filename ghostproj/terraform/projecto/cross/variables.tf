@@ -377,7 +377,7 @@ variable "domain_name" {
 
 
 variable "aws_lb_main_id" {
-  type = string
+    type = string
   default = "ec2nome"
 }
 
